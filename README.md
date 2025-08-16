@@ -1,4 +1,4 @@
-# HuggingGraph: Understanding the Supply Chain of the LLM Ecosystem
+# HuggingGraph: Understanding the Supply Chain of LLM Ecosystem
 
 ---
 
@@ -89,9 +89,9 @@ If you use this dataset or figures, please cite the paper:
 
 ---
 
-## 📬 Contact
+## 📬 Contact  
 
-For questions, updates, and related work, visit:
-👉 [https://mdshahedrahman.github.io/](https://mdshahedrahman.github.io/)
+For questions, updates, and related work, visit:  
+👉 <a href="https://yuede.github.io" target="_blank">https://yuede.github.io</a>; <a href="https://mdshahedrahman.github.io" target="_blank">https://mdshahedrahman.github.io</a>  
 
 ---
