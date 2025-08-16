@@ -92,6 +92,7 @@ If you use this dataset or figures, please cite the paper:
 ## 📬 Contact  
 
 For questions, updates, and related work, visit:  
-👉 <a href="https://yuede.github.io" target="_blank">https://yuede.github.io</a>; <a href="https://mdshahedrahman.github.io" target="_blank">https://mdshahedrahman.github.io</a>  
+👉 [Yuede Ji](https://yuede.github.io)  
+👉 [Mohammad Shahedur Rahman](https://mdshahedrahman.github.io)  
 
 ---
