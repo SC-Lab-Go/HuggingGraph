@@ -4,7 +4,7 @@
 
 ## 📖 Overview
 
-**HuggingGraph** is a heavy-tailed, heterogeneous graph that captures **lineage, dependencies, and risks** across Large Language Models (LLMs) and datasets.  
+**HuggingGraph** is a heavy-tailed, heterogeneous graph that captures **Supply Chain Relationship** across Large Language Models (LLMs) and datasets.  
 It is constructed from Hugging Face metadata, repository cross-links, and textual analysis, modeling how **datasets, base models, fine-tunes, adapters, quantized models, and merges** interconnect in the AI supply chain.
 
 This repository contains the artifacts released with our **CIKM 2025** paper:
@@ -16,7 +16,7 @@ This repository contains the artifacts released with our **CIKM 2025** paper:
 ## 📂 Repository Contents
 
 * **`HuggingGraph.dot`** – Full graph in Graphviz `.dot` format.  
-* **`subgraph.pdf`** – A sample subgraph figure (as shown in the paper), highlighting forward and backward dependencies for a representative model.  
+* **`subgraph.pdf`** – A sample subgraph figure (as shown in the paper), highlighting the supply chain relationship for a representative model.  
 * **`README.md`** – Documentation and usage instructions.  
 
 ---
@@ -49,7 +49,7 @@ dot -V
 
 ### 2. Set Up Python Environment
 
-We recommend Python **3.9+**. Create a virtual environment:
+We recommend Python **3.10+**. Create a virtual environment:
 
 ```bash
 python -m venv venv
@@ -129,7 +129,7 @@ This enables you to:
 
 ### 4. Working with Subgraphs
 
-Because the full graph is very large, it is often more practical to work with smaller **subgraphs**.
+Because the full graph is large, it is often more practical to work with smaller **subgraphs**.
 
 Example: extract the first 100 nodes as a subgraph:
 
