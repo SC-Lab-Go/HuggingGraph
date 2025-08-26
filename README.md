@@ -117,13 +117,6 @@ print(f"Edges: {G.number_of_edges()}")
 # Example: list first 10 nodes
 print(list(G.nodes())[:10])
 ```
-
-This enables you to:
-
-* Compute graph statistics (e.g., degree distributions, connected components)
-* Run algorithms (e.g., shortest paths, centrality, clustering)
-* Extract and visualize **subgraphs** for focused analysis
-
 ---
 
 ### 4. Working with Subgraphs
