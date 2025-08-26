@@ -4,8 +4,7 @@
 
 ## 📖 Overview
 
-**HuggingGraph** is a heavy-tailed, heterogeneous graph that captures **Supply Chain Relationships** across Large Language Models (LLMs) and datasets.  
-It is constructed from Hugging Face metadata, repository cross-links, and textual analysis, modeling how **datasets, base models, fine-tunes, adapters, quantized models, and merges** interconnect in the AI supply chain.
+**HuggingGraph** is a heavy-tailed, heterogeneous graph that captures **Supply Chain Relationships** across Large Language Models (LLMs) and datasets. It is constructed from Hugging Face metadata, repository cross-links, and textual analysis, modeling how **datasets, base models, fine-tunes, adapters, quantized models, and merges** interconnect in the AI supply chain.
 
 This repository contains the artifacts released with our **CIKM 2025** paper:
 
