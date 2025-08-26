@@ -178,7 +178,7 @@ If you use this dataset or figures, please cite the paper:
 
 ```bibtex
 # Citation details will be updated soon
-```
+
 
 ---
 
