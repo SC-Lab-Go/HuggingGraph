@@ -1,6 +1,3 @@
-Got it ✅ — here’s the **complete, polished, and comprehensive `README.md`** you can copy–paste directly into your repo:
-
-````markdown
 # HuggingGraph: Understanding the Supply Chain of LLM Ecosystem
 
 ---
