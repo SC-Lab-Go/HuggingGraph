@@ -192,7 +192,7 @@ If you use this dataset or figures, please cite the paper:
 
 ## 📬 Contact
 
-For questions, updates, and related work, visit:
+For questions, updates, and related work, visit:<br>
 👉 [Yuede Ji](https://yuede.github.io) <br>
 👉 [Mohammad Shahedur Rahman](https://mdshahedrahman.github.io)
 
