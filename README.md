@@ -177,7 +177,13 @@ HuggingGraph supports **forward and backward tracing** of dependencies, helping 
 If you use this dataset or figures, please cite the paper:
 
 ```bibtex
-# Citation details will be updated soon
+@inproceedings{rahman2025hugginggraph,
+  title={Hugginggraph: Understanding the supply chain of llm ecosystem},
+  author={Rahman, Mohammad Shahedur and Gao, Peng and Ji, Yuede},
+  booktitle={Proceedings of the 34th ACM International Conference on Information and Knowledge Management},
+  pages={5997--6005},
+  year={2025}
+}
 ```
 
 ---
