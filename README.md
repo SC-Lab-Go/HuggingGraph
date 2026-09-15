@@ -120,8 +120,6 @@ task, or linked GitHub repository.
 | `adapter` | model | model | Target is an adapter derived from source. |
 | `quantized` | model | model | Target is a quantized form of source. |
 | `merged` | model | model | Target is a merge containing source. |
-| `converted` | model | model | Target is a format conversion of source. |
-| `new_version` | model | model | Target is a declared newer version of source. |
 | `trained_on` | dataset | model | Source dataset is declared as training data for target model. |
 | `derived_from` | dataset | dataset | Target dataset is derived from source dataset. |
 | `uses_library` | model or dataset | library | Source declares or is associated with the target library. |
