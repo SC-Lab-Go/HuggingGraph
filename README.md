@@ -74,9 +74,9 @@ v2.
 | Dataset to GitHub repository | 1,303 | 1,570 |
 | **Unified HuggingGraph v2** | **5,003,730** | **See node-type breakdown below** |
 
-HuggingGraph v2 contains 2,221,012 unique nodes after global deduplication. This is the union of all edge endpoints, not the sum of the eleven subgraph node counts. The detailed breakdown by node type is shown below.
-The unified node count is the union of all edge endpoints, not the sum of the
-subgraph node counts. The same model or dataset can participate in several
+HuggingGraph v2 contains 2,221,012 unique nodes after global deduplication. 
+This is the union of all edge endpoints, not the sum of the eleven subgraph node counts. 
+The detailed breakdown by node type is shown below. The same model or dataset can participate in several
 subgraphs, and models and datasets can share library, license, task, or GitHub
 repository targets.
 
