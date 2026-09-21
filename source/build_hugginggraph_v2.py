@@ -1,10 +1,6 @@
 #!/usr/bin/env python3
 """Build HuggingGraph v2 from the intact v1 graph and attribute subgraphs.
 
-Created: 2026-09-14
-Version: v2026.09.14-10
-Purpose: Merge all eleven logical subgraphs into graph-ready CSV, JSONL, and
-         v1-compatible DOT artifacts without modifying any source artifact.
 """
 
 from __future__ import annotations
