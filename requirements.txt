@@ -1,0 +1,8 @@
+# Created: 2026-09-21
+# Version: v2026.09.21-01
+# Purpose: Direct runtime dependencies for metadata collection and graph construction.
+# Python: 3.10+
+
+huggingface_hub==1.29.0
+requests==2.34.2
+tqdm==4.70.0
