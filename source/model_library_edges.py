@@ -1,10 +1,7 @@
 #!/usr/bin/env python3
 """Create and query model-to-library edges from saved model-card metadata.
 
-Created: 2026-09-14
-Version: v2026.09.14-07
-Purpose: Represent model library declarations and recognized library tags as
-         ``model -> uses_library -> library`` relationships.
+
 """
 
 from __future__ import annotations
