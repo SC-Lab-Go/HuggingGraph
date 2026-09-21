@@ -1,19 +1,6 @@
 #!/usr/bin/env python3
 """Count model types from saved Hugging Face README metadata.
 
-Change history:
-2026-09-04 v2026.09.04-03
-- Recognize legacy finetune:<value> tags as fine-tuning evidence.
-- Default a remaining legacy base_model:<model-id> tag to fine-tune.
-- Backup: count_model_types.py.bak.20260904-151244
-2026-09-04 v2026.09.04-02
-- Classify a legacy base_model:<model-id> tag accompanied by a merge tag as
-  a heuristic merge only after the existing classification rules are checked.
-- Backup: count_model_types.py.bak.20260904-150719
-2026-09-04 v2026.09.04-01
-- Default models with a declared base_model but no recognized relationship to
-  finetune, while preserving all existing explicit and tag-based rules.
-- Backup: count_model_types.py.bak.20260904-145808
 """
 
 import argparse
