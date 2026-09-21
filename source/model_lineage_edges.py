@@ -11,34 +11,7 @@ model_lineage_edges_inferred.csv / .jsonl
     Weaker evidence, never mixed into the declared output. Schema is
     source, edge_type, target, evidence, confidence.
 
-Change history:
-2026-09-08 v2026.09.08-05
-- Add the separate inferred-edge output described above.
-- Mine five additional explicit parent fields into the declared output:
-  base\\_model (markdown-escaped key), basemodel, source_model,
-  duplicated_from and teacher_model.
-- Add four inference layers, written only to the inferred output:
-  ambiguous parent-ish fields, model IDs embedded in free-form card tags,
-  same-owner license_link references whose name is contained in the child
-  name, and same-owner repository-name suffix stripping.
-- Record declared new_version successor relationships in the inferred output
-  with edge_type new_version. Direction is older -> newer, which is the
-  opposite of a parent edge, so these are never placed in the declared file.
-- Consume trailing quantization shorthands such as q4_k_m as single
-  repository-name tokens.
-- Read models_without_metadata.jsonl and recover same-owner parents from
-  repository names, the only signal those records carry.
-- Validate every newly mined or inferred parent ID against the full crawled
-  model-ID universe in all_huggingface_models_2026Aug28.csv.
-- Backup: model_lineage_edges.py.bak.20260908-215638
-2026-09-08 v2026.09.08-04
-- Add validated parent IDs from an explicit allowlist of alternative fields.
-- Normalize three observed misspellings of base_model_relationship.
-- Backup: model_lineage_edges.py.bak.20260908-212730
-2026-09-08 v2026.09.08-03
-- Recover parent IDs encoded in base_model/base-model tags.
-- Preserve tag-specific relationship types for tag-only parents.
-- Backup: model_lineage_edges.py.bak.20260908-211848
+
 """
 
 import csv
