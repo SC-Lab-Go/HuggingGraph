@@ -1,10 +1,7 @@
 #!/usr/bin/env python3
 """Create and query model-license, model-task, and model-GitHub edges.
 
-Created: 2026-09-14
-Version: v2026.09.14-08
-Purpose: Extract three typed relationship sets from saved Hugging Face
-         model-card metadata while preserving evidence strength.
+
 """
 
 from __future__ import annotations
