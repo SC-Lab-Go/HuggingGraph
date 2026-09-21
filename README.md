@@ -1,5 +1,9 @@
 <!--
 Change history
+2026-09-21 v2026.09.21-03
+- Documented the metadata-collection and graph-construction source files.
+- Backup: github_remote_backup_20260914-204130/readme_source_update_20260921/README.md.bak.20260921-185150
+
 2026-09-14 v2026.09.14-12
 - Documented HuggingGraph v2 as a DOT-only release.
 - Backup: README.md.bak.20260914-225339
@@ -35,6 +39,40 @@ This repository contains artifacts related to the CIKM 2025 paper:
 Version 0 remains available for reproducibility. Version 1 is a schema update,
 not a byte-compatible replacement for v0. Version 2 preserves every v1 edge
 and adds eight model/dataset attribute subgraphs.
+
+## Source code
+
+The reproducible metadata-collection and graph-construction code is in the
+[`source/`](source/) directory. Install its direct Python dependencies with:
+
+```bash
+python -m pip install -r source/requirements.txt
+```
+
+Python 3.10 or later is recommended. The directory contains:
+
+### Metadata collection
+
+- `download_model_metadata.py` collects Hugging Face model-card metadata.
+- `download_dataset_metadata.py` collects Hugging Face dataset-card metadata.
+
+### Graph construction
+
+- `model_lineage_edges.py` constructs declared and inferred model-lineage edges.
+- `dataset_model_edges.py` constructs validated dataset-to-model training edges.
+- `dataset_dataset_edges.py` constructs dataset-lineage edges.
+- `model_library_edges.py` constructs model-to-library edges.
+- `model_license_task_github_edges.py` constructs model license, task, and GitHub edges.
+- `model_dataset_attribute_edges.py` combines model and dataset attribute subgraphs.
+- `build_hugginggraph_v2.py` assembles the HuggingGraph v2 artifacts.
+
+### Supporting files
+
+- `count_model_types.py` provides model-derivation classification used by `model_lineage_edges.py`.
+- `requirements.txt` records the direct runtime dependencies.
+
+The large metadata snapshots and intermediate edge files are inputs or generated
+artifacts and are not stored in the `source/` directory.
 
 ## HuggingGraph v1 scale
 
