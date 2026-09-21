@@ -1,10 +1,7 @@
 #!/usr/bin/env python3
 """Build combined model+dataset library, license, task, and GitHub subgraphs.
 
-Created: 2026-09-14
-Version: v2026.09.14-09
-Purpose: Preserve validated model attribute edges, add dataset-card evidence,
-         and emit four typed subgraphs with graph-ready and detailed outputs.
+
 """
 
 from __future__ import annotations
