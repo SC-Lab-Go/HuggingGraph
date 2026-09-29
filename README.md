@@ -145,8 +145,7 @@ GitHub repository nodes.
 |---|---:|---:|
 | Readable README/card | 1,975,515 | 698,202 |
 | No readable README | 1,005,324 | 286,579 |
-| Restricted repository | 48,537 | 38,353 |
-| Unresolved crawl error | 1 | 0 |
+| Restricted repository | 48,538 | 38,353 |
 | **Total processed** | **3,029,377** | **1,023,134** |
 
 ## Node identifiers
