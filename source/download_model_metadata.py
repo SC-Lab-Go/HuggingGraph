@@ -10,7 +10,11 @@ The adjacent SQLite state database contains only the CSV whitelist and resume
 state. It lets an interrupted crawl continue from the saved pagination URL
 without holding roughly three million model IDs in memory.
 
-
+Change history:
+2026-09-01 v2026.09.01-01
+- Added bulk, authenticated cardData collection from the Hub models API.
+- Added disk-backed CSV filtering, durable JSONL output, and exact resume state.
+- Backup: download_model_metadata.py.bak.20260901-165207
 """
 
 from __future__ import annotations
