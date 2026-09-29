@@ -1,5 +1,9 @@
 <!--
 Change history
+2026-09-29 v2026.09.29-07
+- Documented the eleven-subgraph HuggingGraph v2 release.
+- Backup: git_upload_backups/HuggingGraph_v2_release_20260929-175020
+
 2026-09-21 v2026.09.21-03
 - Documented the metadata-collection and graph-construction source files.
 - Backup: github_remote_backup_20260914-204130/readme_source_update_20260921/README.md.bak.20260921-185150
@@ -55,6 +59,10 @@ Python 3.10 or later is recommended. The directory contains:
 
 - `download_model_metadata.py` collects Hugging Face model-card metadata.
 - `download_dataset_metadata.py` collects Hugging Face dataset-card metadata.
+- `extract_model_github_edges_streaming.py` extracts normalized GitHub links
+  from the complete model README crawl.
+- `extract_dataset_github_edges_streaming.py` extracts normalized GitHub links
+  from the complete dataset README crawl.
 
 ### Graph construction
 
@@ -93,26 +101,24 @@ crawled populations were 3,029,377 models and 1,023,134 datasets.
 ## HuggingGraph v2 scale
 
 HuggingGraph v2 contains eleven logical subgraphs. Model-side and dataset-side
-attribute relationships are reported separately even though each attribute
-pair is stored together in the corresponding combined edge file used to build
-v2.
+attribute relationships are stored and reported separately.
 
 | Relationship | Unique edges | Unique nodes within subgraph |
 |---|---:|---:|
 | Model to model | 966,035 | 978,868 |
 | Dataset to model | 362,064 | 287,539 |
 | Dataset to dataset | 5,217 | 5,974 |
-| Model to library | 1,310,095 | 1,213,566 |
+| Model to library | 1,311,386 | 1,214,466 |
 | Dataset to library | 17,168 | 16,727 |
-| Model to license | 1,089,530 | 1,091,486 |
+| Model to license | 1,090,845 | 1,092,560 |
 | Dataset to license | 341,884 | 343,153 |
-| Model to task | 575,630 | 540,231 |
+| Model to task | 577,077 | 541,491 |
 | Dataset to task | 327,713 | 217,675 |
-| Model to GitHub repository | 7,091 | 7,622 |
-| Dataset to GitHub repository | 1,303 | 1,570 |
-| **Unified HuggingGraph v2** | **5,003,730** | **See node-type breakdown below** |
+| Model to GitHub repository | 962,855 | 729,920 |
+| Dataset to GitHub repository | 188,888 | 196,768 |
+| **Unified HuggingGraph v2** | **6,151,132** | **2,375,695** |
 
-HuggingGraph v2 contains 2,221,012 unique nodes after global deduplication. 
+HuggingGraph v2 contains 2,375,695 unique nodes after global deduplication.
 This is the union of all edge endpoints, not the sum of the eleven subgraph node counts. 
 The detailed breakdown by node type is shown below. The same model or dataset can participate in several
 subgraphs, and models and datasets can share library, license, task, or GitHub
@@ -120,18 +126,33 @@ repository targets.
 
 | Node type | Unique nodes in v2 |
 |---|---:|
-| Model | 1,820,947 |
-| Dataset | 390,814 |
-| Library | 2,130 |
-| License | 5,120 |
-| Task | 847 |
-| GitHub repository | 1,154 |
-| **Total** | **2,221,012** |
+| Model | 1,865,663 |
+| Dataset | 430,959 |
+| Library | 2,149 |
+| License | 5,142 |
+| Task | 848 |
+| GitHub repository | 70,934 |
+| **Total** | **2,375,695** |
+
+The GitHub portion contains 683,431 model sources and 163,375 dataset sources.
+Models link to 46,489 unique repositories, datasets link to 33,393, and 8,948
+repositories occur in both populations. Their union is therefore 70,934
+GitHub repository nodes.
+
+## Crawled populations
+
+| Population outcome | Models | Datasets |
+|---|---:|---:|
+| Readable README/card | 1,975,515 | 698,202 |
+| No readable README | 1,005,324 | 286,579 |
+| Restricted repository | 48,537 | 38,353 |
+| Unresolved crawl error | 1 | 0 |
+| **Total processed** | **3,029,377** | **1,023,134** |
 
 ## Node identifiers
 
-Versions 1 and 2 prefix every internal node ID with its entity type. Version 2
-uses six prefixes:
+Versions 1 and 2 prefix Hugging Face and categorical node IDs with their entity
+type. Version 2 uses five typed prefixes plus canonical GitHub repository URLs:
 
 ```text
 model::owner/repository
@@ -139,12 +160,14 @@ dataset::owner/repository
 library::library-name
 license::license-identifier
 task::task-identifier
-github::owner/repository
+https://github.com/owner/repository
 ```
 
 Typed IDs prevent a model repository and a dataset repository with the same
 `owner/repository` string from collapsing into one graph node. To recover the
 underlying identifier, split once on `::` and use the second component.
+GitHub repository nodes are instead stored as normalized HTTPS repository URLs
+so that they can be followed directly.
 
 ## Edge schema
 
@@ -203,8 +226,9 @@ deleted, renamed, misspelled, or absent from the collection snapshot.
 
 ### Version 2 attribute evidence
 
-Version 2 derives its new relationships from parsed README/model-card and
-README/dataset-card YAML metadata:
+Version 2 derives library, license, and task relationships from parsed
+README/model-card and README/dataset-card YAML metadata. GitHub relationships
+are extracted from the complete readable README bodies:
 
 - Library edges use standard `library_name` declarations, selected alternative
   fields, and recognized library tags.
@@ -212,7 +236,9 @@ README/dataset-card YAML metadata:
   alternative fields, and recognized license tags.
 - Task edges use model `pipeline_tag` values, dataset task categories and IDs,
   selected alternative fields, and recognized task tags.
-- GitHub edges canonicalize matching URLs to `github::owner/repository`.
+- GitHub edges canonicalize matching URLs to
+  `https://github.com/owner/repository`, removing subpaths, fragments, query
+  strings, and case-only duplicates from logical repository accounting.
 
 The v2 DOT file encodes the canonical `edge_type` and a compatibility `label`;
 it does not encode confidence or provenance. In the extraction pipeline,
@@ -221,11 +247,10 @@ references. In particular, a GitHub URL embedded in a license or other
 metadata field does not necessarily identify the source artifact's own code
 repository.
 
-The downloaded snapshots contain parsed card metadata rather than the complete
-README body or every tag automatically computed by the live Hugging Face Hub.
-Consequently, README-body-only GitHub links and some live Hub filters are not
-fully represented. The Hub's `custom_code` filter is not equivalent to a
-GitHub-link relationship.
+The model and dataset GitHub scans processed 1,975,515 and 698,202 readable
+README files respectively. Restricted and missing READMEs cannot contribute
+README-body links, and repository metadata remains user-authored. The Hub's
+`custom_code` filter is not equivalent to a GitHub-link relationship.
 
 ## Migration and compatibility
 
@@ -242,7 +267,8 @@ Consumers moving from v0 to v1 should:
 
 Consumers moving from v1 to v2 should additionally:
 
-1. Recognize `library::`, `license::`, `task::`, and `github::` node IDs.
+1. Recognize `library::`, `license::`, and `task::` node IDs, plus normalized
+   `https://github.com/owner/repository` targets.
 2. Recognize `uses_library`, `has_license`, `performs_task`, `supports_task`,
    and `links_to_github` edge types.
 3. Keep model tasks and dataset tasks semantically distinct.

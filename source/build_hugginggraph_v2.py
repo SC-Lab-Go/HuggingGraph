@@ -2,9 +2,16 @@
 """Build HuggingGraph v2 from the intact v1 graph and attribute subgraphs.
 
 Created: 2026-09-14
-Version: v2026.09.14-10
-Purpose: Merge all eleven logical subgraphs into graph-ready CSV, JSONL, and
-         v1-compatible DOT artifacts without modifying any source artifact.
+Version: v2026.09.29-07
+Purpose: Merge the intact v1 graph and eight current attribute subgraphs into
+         the release HuggingGraph v2 DOT artifact.
+
+Change history:
+2026-09-29 v2026.09.29-07
+- Read the eleven-subgraph snapshot and validate every relationship count.
+- Support canonical HTTPS GitHub repository targets.
+- Build the DOT-only v2 release without changing v0 or v1.
+- Backup: build_hugginggraph_v2.py.bak.20260929-175020
 """
 
 from __future__ import annotations
@@ -18,15 +25,20 @@ from pathlib import Path
 
 
 SCRIPT_DIR = Path(__file__).resolve().parent
-DEFAULT_BASE_DOT = SCRIPT_DIR.parents[1] / "HuggingGraph" / "HuggingGraph_v1.dot"
-DEFAULT_ATTRIBUTE_DIR = SCRIPT_DIR
-DEFAULT_OUTPUT_DIR = SCRIPT_DIR.parents[1] / "HuggingGraph"
+DEFAULT_BASE_DOT = SCRIPT_DIR / "HuggingGraph_v1.dot"
+DEFAULT_EDGE_DIR = SCRIPT_DIR / "edges"
+DEFAULT_OUTPUT_DOT = SCRIPT_DIR / "HuggingGraph_v2.dot"
 
+# logical subgraph: (file, expected target prefix, expected edge count)
 ATTRIBUTE_FILES = {
-    "library": "model_dataset_library_edges.csv",
-    "license": "model_dataset_license_edges.csv",
-    "task": "model_dataset_task_edges.csv",
-    "github": "model_dataset_github_edges.csv",
+    "model-library": ("04_model_library_edges.csv", "library::", 1_311_386),
+    "dataset-library": ("05_dataset_library_edges.csv", "library::", 17_168),
+    "model-license": ("06_model_license_edges.csv", "license::", 1_090_845),
+    "dataset-license": ("07_dataset_license_edges.csv", "license::", 341_884),
+    "model-task": ("08_model_task_edges.csv", "task::", 577_077),
+    "dataset-task": ("09_dataset_task_edges.csv", "task::", 327_713),
+    "model-github": ("10_model_github_edges.csv", "https://github.com/", 962_855),
+    "dataset-github": ("11_dataset_github_edges.csv", "https://github.com/", 188_888),
 }
 
 FIELDS = ["source", "edge_type", "target"]
@@ -39,11 +51,11 @@ DOT_EDGE = re.compile(
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Build HuggingGraph v2 CSV, JSONL, and DOT artifacts."
+        description="Build the count-verified HuggingGraph v2 DOT artifact."
     )
     parser.add_argument("--base-dot", type=Path, default=DEFAULT_BASE_DOT)
-    parser.add_argument("--attribute-dir", type=Path, default=DEFAULT_ATTRIBUTE_DIR)
-    parser.add_argument("--output-dir", type=Path, default=DEFAULT_OUTPUT_DIR)
+    parser.add_argument("--edge-dir", type=Path, default=DEFAULT_EDGE_DIR)
+    parser.add_argument("--output-dot", type=Path, default=DEFAULT_OUTPUT_DOT)
     return parser.parse_args()
 
 
@@ -56,43 +68,30 @@ def dot_string(value: str) -> str:
     return json.dumps(value, ensure_ascii=False)
 
 
-def output_paths(output_dir: Path) -> tuple[Path, Path, Path]:
-    return (
-        output_dir / "HuggingGraph_v2.csv",
-        output_dir / "HuggingGraph_v2.jsonl",
-        output_dir / "HuggingGraph_v2.dot",
-    )
-
-
 def validate_paths(
     args: argparse.Namespace,
-) -> tuple[Path, dict[str, Path], Path, Path, Path]:
+) -> tuple[Path, dict[str, tuple[Path, str, int]], Path]:
     base_dot = args.base_dot.expanduser().resolve()
-    attribute_dir = args.attribute_dir.expanduser().resolve()
-    output_dir = args.output_dir.expanduser().resolve()
+    edge_dir = args.edge_dir.expanduser().resolve()
+    output_dot = args.output_dot.expanduser().resolve()
     if not base_dot.is_file():
         raise FileNotFoundError(f"Base v1 DOT not found: {base_dot}")
     attributes = {
-        name: (attribute_dir / filename).resolve()
-        for name, filename in ATTRIBUTE_FILES.items()
+        name: ((edge_dir / filename).resolve(), prefix, expected)
+        for name, (filename, prefix, expected) in ATTRIBUTE_FILES.items()
     }
-    missing = [path for path in attributes.values() if not path.is_file()]
+    missing = [path for path, _prefix, _expected in attributes.values() if not path.is_file()]
     if missing:
         raise FileNotFoundError(
             "Missing attribute inputs:\n" + "\n".join(str(path) for path in missing)
         )
-    output_dir.mkdir(parents=True, exist_ok=True)
-    csv_path, jsonl_path, dot_path = output_paths(output_dir)
-    existing = [path for path in (csv_path, jsonl_path, dot_path) if path.exists()]
-    if existing:
-        raise FileExistsError(
-            "Refusing to overwrite existing v2 artifacts:\n"
-            + "\n".join(str(path) for path in existing)
-        )
-    inputs = {base_dot, *attributes.values()}
-    if any(path in inputs for path in (csv_path, jsonl_path, dot_path)):
+    output_dot.parent.mkdir(parents=True, exist_ok=True)
+    if output_dot.exists():
+        raise FileExistsError(f"Refusing to overwrite existing output: {output_dot}")
+    inputs = {base_dot, *(item[0] for item in attributes.values())}
+    if output_dot in inputs:
         raise ValueError("Input and output paths must differ")
-    return base_dot, attributes, csv_path, jsonl_path, dot_path
+    return base_dot, attributes, output_dot
 
 
 def v1_edges(path: Path):
@@ -137,19 +136,11 @@ def logical_subgraph(source: str, target: str, family: str | None = None) -> str
 
 def build(
     base_dot: Path,
-    attributes: dict[str, Path],
-    csv_path: Path,
-    jsonl_path: Path,
+    attributes: dict[str, tuple[Path, str, int]],
     dot_path: Path,
 ) -> Counter[str]:
     counters: Counter[str] = Counter()
-    with (
-        csv_path.open("x", newline="", encoding="utf-8") as csv_file,
-        jsonl_path.open("x", encoding="utf-8") as jsonl_file,
-        dot_path.open("x", encoding="utf-8") as dot_file,
-    ):
-        writer = csv.DictWriter(csv_file, fieldnames=FIELDS)
-        writer.writeheader()
+    with dot_path.open("x", encoding="utf-8") as dot_file:
         dot_file.write(
             'digraph HuggingGraph {\n'
             '  graph [rankdir="LR"];\n'
@@ -157,11 +148,6 @@ def build(
         )
 
         def emit(source: str, edge_type: str, target: str, label: str) -> None:
-            row = {"source": source, "edge_type": edge_type, "target": target}
-            writer.writerow(row)
-            jsonl_file.write(
-                json.dumps(row, ensure_ascii=False, separators=(",", ":")) + "\n"
-            )
             dot_file.write(
                 f"  {dot_string(source)} -> {dot_string(target)} "
                 f"[label={dot_string(label)}, edge_type={dot_string(edge_type)}];\n"
@@ -173,7 +159,9 @@ def build(
             counters[f"subgraph:{logical_subgraph(source, target)}"] += 1
             counters["base_v1_edges"] += 1
 
-        for family, path in attributes.items():
+        for subgraph, (path, target_prefix, expected_count) in attributes.items():
+            source_prefix = subgraph.split("-", 1)[0] + "::"
+            before = counters["edges"]
             with path.open(newline="", encoding="utf-8") as input_file:
                 reader = csv.DictReader(input_file)
                 if reader.fieldnames != FIELDS:
@@ -182,23 +170,26 @@ def build(
                     source = row["source"]
                     edge_type = row["edge_type"]
                     target = row["target"]
-                    if not source.startswith(("model::", "dataset::")):
+                    if not source.startswith(source_prefix):
                         raise ValueError(f"Untyped source in {path} line {line_number}")
-                    expected_target = f"{family}::"
-                    if not target.startswith(expected_target):
+                    if not target.startswith(target_prefix):
                         raise ValueError(
                             f"Unexpected target type in {path} line {line_number}"
                         )
                     emit(source, edge_type, target, edge_type)
-                    counters[f"subgraph:{logical_subgraph(source, target, family)}"] += 1
-                    counters[f"family:{family}"] += 1
+                    counters[f"subgraph:{subgraph}"] += 1
+            actual_count = counters["edges"] - before
+            if actual_count != expected_count:
+                raise ValueError(
+                    f"Unexpected {subgraph} count: {actual_count:,} != {expected_count:,}"
+                )
 
         dot_file.write("}\n")
     return counters
 
 
 def report(
-    counters: Counter[str], csv_path: Path, jsonl_path: Path, dot_path: Path
+    counters: Counter[str], dot_path: Path
 ) -> None:
     print("\nHuggingGraph v2")
     print("---------------")
@@ -211,18 +202,14 @@ def report(
         print(f"{name:24} {counters[f'subgraph:{name}']:12,}")
     print(f"{'Base v1 edges':24} {counters['base_v1_edges']:12,}")
     print(f"{'Total v2 edges':24} {counters['edges']:12,}")
-    print(f"\nCSV:   {csv_path}")
-    print(f"JSONL: {jsonl_path}")
     print(f"DOT:   {dot_path}")
 
 
 def main() -> int:
     try:
-        base_dot, attributes, csv_path, jsonl_path, dot_path = validate_paths(
-            parse_args()
-        )
-        counters = build(base_dot, attributes, csv_path, jsonl_path, dot_path)
-        report(counters, csv_path, jsonl_path, dot_path)
+        base_dot, attributes, dot_path = validate_paths(parse_args())
+        counters = build(base_dot, attributes, dot_path)
+        report(counters, dot_path)
     except KeyboardInterrupt:
         print("Interrupted; move incomplete v2 outputs before rerunning.")
         return 130
