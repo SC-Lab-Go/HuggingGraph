@@ -116,7 +116,7 @@ attribute relationships are stored and reported separately.
 | Dataset to task | 327,713 | 217,675 |
 | Model to GitHub repository | 962,855 | 729,920 |
 | Dataset to GitHub repository | 188,888 | 196,768 |
-| **Unified HuggingGraph v2** | **6,151,132** | **2,375,695** |
+| **Unified HuggingGraph v2** | **6,151,132** | **See the node-type breakdown below** |
 
 HuggingGraph v2 contains 2,375,695 unique nodes after global deduplication.
 This is the union of all edge endpoints, not the sum of the eleven subgraph node counts. 
