@@ -1,11 +1,3 @@
-#!/usr/bin/env python3
-"""Incrementally extract Dataset-GitHub edges from the full README crawl.
-
-Created: 2026-09-28
-Version: v2026.09.28-01
-Purpose: Build deduplicated Dataset-GitHub outputs during README collection.
-"""
-
 from __future__ import annotations
 
 import argparse
