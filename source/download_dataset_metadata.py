@@ -1,23 +1,3 @@
-#!/usr/bin/env python3
-"""Download Hugging Face dataset-card (README YAML) metadata in bulk.
-
-The input CSV is the authoritative whitelist of dataset IDs. The script walks
-the paginated Hub datasets API with ``expand=cardData`` and writes one JSON
-record per requested dataset. An adjacent SQLite database stores resume state
-and exact output offsets so an interrupted crawl can safely continue.
-
-Created: 2026-09-14
-Version: v2026.09.14-03
-Purpose: Collect dataset-card metadata and account for datasets with metadata,
-         empty metadata, or no result from the datasets API.
-
-Change history:
-2026-09-14 v2026.09.14-03
-- Use expand=cardData, which the datasets list endpoint requires to return
-  parsed dataset-card metadata.
-- Backup: download_dataset_metadata.py.bak.20260914-161358
-"""
-
 from __future__ import annotations
 
 import argparse
