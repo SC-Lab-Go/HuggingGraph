@@ -1,14 +1,3 @@
-#!/usr/bin/env python3
-"""Incrementally extract Model-GitHub edges from the full README crawl.
-
-Created: 2026-09-25
-Version: v2026.09.25-03
-Purpose: Build deduplicated Model-GitHub outputs while README collection runs.
-
-Only bytes committed by the downloader's SQLite state are read. Output byte
-offsets and unique edges are committed together, allowing exact resumption.
-"""
-
 from __future__ import annotations
 
 import argparse
