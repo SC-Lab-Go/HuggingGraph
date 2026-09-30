@@ -1,5 +1,10 @@
 <!--
 Change history
+2026-09-30 v2026.09.30-01
+- Released HuggingGraph v3 with six Space relationship families.
+- Normalized GitHub targets across model, dataset, and Space populations.
+- Backup: README.md.bak.20260930-215839
+
 2026-09-29 v2026.09.29-07
 - Documented the eleven-subgraph HuggingGraph v2 release.
 - Backup: git_upload_backups/HuggingGraph_v2_release_20260929-175020
@@ -21,11 +26,12 @@ Change history
 # HuggingGraph: Understanding the Supply Chain of the LLM Ecosystem
 
 HuggingGraph is a directed, heterogeneous graph of supply-chain relationships
-among Hugging Face models, datasets, libraries, licenses, tasks, and linked
-GitHub repositories. Version 1 captures model derivation, dataset-to-model
+among Hugging Face models, datasets, Spaces, libraries, licenses, tasks, agent
+frameworks, and linked GitHub repositories. Version 1 captures model derivation, dataset-to-model
 training references, and dataset derivation. Version 2 extends that graph with
 model and dataset relationships to libraries, licenses, tasks, and GitHub
-repositories.
+repositories. Version 3 adds Space relationships to models, datasets, GitHub
+repositories, licenses, tasks, and agent frameworks.
 
 This repository contains artifacts related to the CIKM 2025 paper:
 
@@ -37,12 +43,14 @@ This repository contains artifacts related to the CIKM 2025 paper:
 |---|---|---|
 | `HuggingGraph_v0.dot` | Legacy | Original paper-era graph using raw repository IDs and the `label` edge attribute. |
 | `HuggingGraph_v1.dot` | Previous | Expanded graph with typed model/dataset IDs and both `label` and `edge_type` attributes. |
-| `HuggingGraph_v2.dot` | Current | Version 2 graph in v1-compatible DOT syntax. |
+| `HuggingGraph_v2.dot` | Previous | Version 2 graph with model and dataset attribute relationships. |
+| `HuggingGraph_v3.dot` | Current | Version 3 graph adding six Space relationship families. |
 | `subgraph.pdf` | Example | Small visualization suitable for inspection. |
 
 Version 0 remains available for reproducibility. Version 1 is a schema update,
 not a byte-compatible replacement for v0. Version 2 preserves every v1 edge
-and adds eight model/dataset attribute subgraphs.
+and adds eight model/dataset attribute subgraphs. Version 3 preserves the prior
+relationship families, refreshes their normalized inputs, and adds Space nodes.
 
 ## Source code
 
@@ -63,6 +71,8 @@ Python 3.10 or later is recommended. The directory contains:
   from the complete model README crawl.
 - `extract_dataset_github_edges_streaming.py` extracts normalized GitHub links
   from the complete dataset README crawl.
+- `prepare_hugginggraph_v3_edges.py` reconciles the latest Space population and
+  prepares the 17 normalized v3 edge inputs.
 
 ### Graph construction
 
@@ -73,6 +83,7 @@ Python 3.10 or later is recommended. The directory contains:
 - `model_license_task_github_edges.py` constructs model license, task, and GitHub edges.
 - `model_dataset_attribute_edges.py` combines model and dataset attribute subgraphs.
 - `build_hugginggraph_v2.py` assembles the HuggingGraph v2 artifacts.
+- `build_hugginggraph_v3.py` validates and assembles the HuggingGraph v3 DOT artifact.
 
 ### Supporting files
 
@@ -139,6 +150,56 @@ Models link to 46,489 unique repositories, datasets link to 33,393, and 8,948
 repositories occur in both populations. Their union is therefore 70,934
 GitHub repository nodes.
 
+## HuggingGraph v3 scale
+
+HuggingGraph v3 contains 17 logical relationship families. It adds Space
+relationships and uses one normalized GitHub repository identity across model,
+dataset, and Space sources.
+
+| Relationship | Unique edges | Unique nodes within subgraph |
+|---|---:|---:|
+| Model to model | 966,035 | 978,868 |
+| Dataset to model | 362,064 | 287,539 |
+| Dataset to dataset | 5,217 | 5,974 |
+| Model to library | 1,311,386 | 1,214,466 |
+| Dataset to library | 17,168 | 16,727 |
+| Model to license | 1,090,845 | 1,092,560 |
+| Dataset to license | 341,884 | 343,153 |
+| Model to task | 577,077 | 541,491 |
+| Dataset to task | 327,713 | 217,675 |
+| Model to GitHub repository | 962,855 | 729,920 |
+| Dataset to GitHub repository | 188,888 | 196,768 |
+| Model to Space | 941,121 | 487,287 |
+| Dataset to Space | 83,061 | 85,762 |
+| Space to GitHub repository | 113,755 | 90,895 |
+| Space to license | 420,369 | 420,557 |
+| Space to task | 43,223 | 42,229 |
+| Space to agent framework | 37,059 | 37,016 |
+| **Unified HuggingGraph v3** | **7,789,720** | **3,146,223** |
+
+The node total is the global union of all endpoints. Relationship-specific
+node counts must not be added because the same node can occur in several
+subgraphs.
+
+| Node type | Unique nodes in v3 |
+|---|---:|
+| Model | 1,888,591 |
+| Dataset | 440,013 |
+| Space | 712,728 |
+| Library | 2,149 |
+| License | 5,187 |
+| Task | 866 |
+| GitHub repository | 96,678 |
+| Agent framework | 11 |
+| **Total** | **3,146,223** |
+
+The verified Space population contains 1,481,220 repositories: 413,102 have
+at least one model or dataset relationship and 1,068,118 do not. Three Space
+IDs present in the card snapshot were unavailable during relationship
+reconciliation and are excluded from that verified population. Among connected
+Space nodes, 59,747 link to 31,148 normalized GitHub repositories through
+113,755 unique Space-to-GitHub edges.
+
 ## Crawled populations
 
 | Population outcome | Models | Datasets |
@@ -150,15 +211,17 @@ GitHub repository nodes.
 
 ## Node identifiers
 
-Versions 1 and 2 prefix Hugging Face and categorical node IDs with their entity
-type. Version 2 uses five typed prefixes plus canonical GitHub repository URLs:
+Versions 1 through 3 prefix Hugging Face and categorical node IDs with their
+entity type. Version 3 uses seven typed prefixes plus canonical GitHub repository URLs:
 
 ```text
 model::owner/repository
 dataset::owner/repository
+space::owner/repository
 library::library-name
 license::license-identifier
 task::task-identifier
+agent::framework-name
 https://github.com/owner/repository
 ```
 
@@ -171,8 +234,8 @@ so that they can be followed directly.
 ## Edge schema
 
 Lineage edges are directed from an upstream artifact to a downstream artifact.
-Attribute edges are directed from a model or dataset to its library, license,
-task, or linked GitHub repository.
+Attribute edges are directed from a model, dataset, or Space to the relevant
+artifact or category node.
 
 | Canonical `edge_type` | Source | Target | Meaning |
 |---|---|---|---|
@@ -183,19 +246,21 @@ task, or linked GitHub repository.
 | `trained_on` | dataset | model | Source dataset is declared as training data for target model. |
 | `derived_from` | dataset | dataset | Target dataset is derived from source dataset. |
 | `uses_library` | model or dataset | library | Source declares or is associated with the target library. |
-| `has_license` | model or dataset | license | Source declares or is associated with the target license. |
+| `has_license` | model, dataset, or Space | license | Source declares or is associated with the target license. |
 | `performs_task` | model | task | Model performs or is associated with the target task. |
-| `supports_task` | dataset | task | Dataset supports or is associated with the target task. |
-| `links_to_github` | model or dataset | GitHub repository | Source metadata contains a link to the target repository. |
+| `supports_task` | dataset or Space | task | Source supports or is associated with the target task. |
+| `links_to_github` | model, dataset, or Space | GitHub repository | Source metadata contains a link to the target repository. |
+| `used_by_space` | model or dataset | Space | A Space declares use of the source artifact. |
+| `uses_agent_framework` | Space | agent framework | A Space declares or is classified with the target framework. |
 
-Each v1 and v2 DOT edge carries two relationship attributes:
+Each v1, v2, and v3 DOT edge carries two relationship attributes:
 
 ```dot
 "model::parent" -> "model::child"
     [label="finetune", edge_type="finetune"];
 ```
 
-`edge_type` is the canonical v1/v2 attribute. `label` is supplied for software
+`edge_type` is the canonical attribute. `label` is supplied for software
 written for v0. For merge edges only, the values intentionally differ:
 
 ```dot
@@ -251,6 +316,15 @@ README files respectively. Restricted and missing READMEs cannot contribute
 README-body links, and repository metadata remains user-authored. The Hub's
 `custom_code` filter is not equivalent to a GitHub-link relationship.
 
+### Version 3 Space evidence
+
+Version 3 obtains model and dataset usage from the Space API relationship
+expansions. Space license, task, and agent-framework edges come from Space card
+metadata. Space-to-GitHub edges are extracted from 1,475,109 readable Space
+READMEs. A GitHub link is a declared reference and does not by itself prove a
+runtime code dependency. GitHub targets are normalized to lowercase logical
+`owner/repository` identities before v3 is assembled.
+
 ## Migration and compatibility
 
 Consumers moving from v0 to v1 should:
@@ -275,6 +349,15 @@ Consumers moving from v1 to v2 should additionally:
    explicit declarations.
 5. Use a streaming DOT parser or a filtered subgraph when loading the complete
    DOT graph would exceed available memory.
+
+Consumers moving from v2 to v3 should additionally:
+
+1. Recognize `space::` and `agent::` node IDs.
+2. Recognize `used_by_space` and `uses_agent_framework` edge types.
+3. Permit Space sources for `links_to_github`, `has_license`, and
+   `supports_task` relationships.
+4. Treat the 59,747 GitHub-linked Spaces as a subset of the 712,728 connected
+   Space nodes rather than an additional node population.
 
 ## Loading DOT with NetworkX
 
@@ -307,7 +390,7 @@ def typed_identifier(node):
     return tuple(node.split("::", 1))
 
 
-graph = read_dot("HuggingGraph_v2.dot")
+graph = read_dot("HuggingGraph_v3.dot")
 
 print(f"Nodes: {graph.number_of_nodes():,}")
 print(f"Edges: {graph.number_of_edges():,}")
