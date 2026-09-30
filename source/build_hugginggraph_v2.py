@@ -1,19 +1,3 @@
-#!/usr/bin/env python3
-"""Build HuggingGraph v2 from the intact v1 graph and attribute subgraphs.
-
-Created: 2026-09-14
-Version: v2026.09.29-07
-Purpose: Merge the intact v1 graph and eight current attribute subgraphs into
-         the release HuggingGraph v2 DOT artifact.
-
-Change history:
-2026-09-29 v2026.09.29-07
-- Read the eleven-subgraph snapshot and validate every relationship count.
-- Support canonical HTTPS GitHub repository targets.
-- Build the DOT-only v2 release without changing v0 or v1.
-- Backup: build_hugginggraph_v2.py.bak.20260929-175020
-"""
-
 from __future__ import annotations
 
 import argparse
