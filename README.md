@@ -93,63 +93,6 @@ Python 3.10 or later is recommended. The directory contains:
 The large metadata snapshots and intermediate edge files are inputs or generated
 artifacts and are not stored in the `source/` directory.
 
-## HuggingGraph v1 scale
-
-| Relationship | Unique edges | Unique nodes within subgraph |
-|---|---:|---:|
-| Model to model | 966,035 | 978,868 |
-| Dataset to model | 362,064 | 287,539 |
-| Dataset to dataset | 5,217 | 5,974 |
-| **Merged graph** | **1,333,316** | **1,128,000** |
-
-The merged node count is not the sum of the three subgraph node counts because
-models and datasets recur across subgraphs. The merged graph contains 1,062,824
-unique model nodes and 65,176 unique dataset nodes.
-
-Only nodes participating in at least one v1 edge are represented. The complete
-crawled populations were 3,029,377 models and 1,023,134 datasets.
-
-## HuggingGraph v2 scale
-
-HuggingGraph v2 contains eleven logical subgraphs. Model-side and dataset-side
-attribute relationships are stored and reported separately.
-
-| Relationship | Unique edges | Unique nodes within subgraph |
-|---|---:|---:|
-| Model to model | 966,035 | 978,868 |
-| Dataset to model | 362,064 | 287,539 |
-| Dataset to dataset | 5,217 | 5,974 |
-| Model to library | 1,311,386 | 1,214,466 |
-| Dataset to library | 17,168 | 16,727 |
-| Model to license | 1,090,845 | 1,092,560 |
-| Dataset to license | 341,884 | 343,153 |
-| Model to task | 577,077 | 541,491 |
-| Dataset to task | 327,713 | 217,675 |
-| Model to GitHub repository | 962,855 | 729,920 |
-| Dataset to GitHub repository | 188,888 | 196,768 |
-| **Unified HuggingGraph v2** | **6,151,132** | **See the node-type breakdown below** |
-
-HuggingGraph v2 contains 2,375,695 unique nodes after global deduplication.
-This is the union of all edge endpoints, not the sum of the eleven subgraph node counts. 
-The detailed breakdown by node type is shown below. The same model or dataset can participate in several
-subgraphs, and models and datasets can share library, license, task, or GitHub
-repository targets.
-
-| Node type | Unique nodes in v2 |
-|---|---:|
-| Model | 1,865,663 |
-| Dataset | 430,959 |
-| Library | 2,149 |
-| License | 5,142 |
-| Task | 848 |
-| GitHub repository | 70,934 |
-| **Total** | **2,375,695** |
-
-The GitHub portion contains 683,431 model sources and 163,375 dataset sources.
-Models link to 46,489 unique repositories, datasets link to 33,393, and 8,948
-repositories occur in both populations. Their union is therefore 70,934
-GitHub repository nodes.
-
 ## HuggingGraph v3 scale
 
 HuggingGraph v3 contains 17 logical relationship families. It adds Space
@@ -175,7 +118,7 @@ dataset, and Space sources.
 | Space to license | 420,369 | 420,557 |
 | Space to task | 43,223 | 42,229 |
 | Space to agent framework | 37,059 | 37,016 |
-| **Unified HuggingGraph v3** | **7,789,720** | **3,146,223** |
+| **Unified HuggingGraph v3** | **7,789,720** | **See the node-type breakdown below** |
 
 The node total is the global union of all endpoints. Relationship-specific
 node counts must not be added because the same node can occur in several
