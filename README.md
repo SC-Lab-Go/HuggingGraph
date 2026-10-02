@@ -114,7 +114,7 @@ Dataset, and Space sources.
 |---|---:|---:|
 | Model to model | 966,035 | 978,868 |
 | Dataset to model | 362,064 | 287,539 |
-| Dataset to dataset candidate union | 12,541 | 15,172 |
+| Dataset to dataset | 12,541 | 15,172 |
 | Model to library | 1,311,386 | 1,214,466 |
 | Dataset to library | 16,864 | 16,467 |
 | Model to license | 1,090,845 | 1,092,560 |
