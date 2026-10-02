@@ -1,3 +1,25 @@
+#!/usr/bin/env python3
+"""Create validated dataset-to-model ``trained_on`` edges.
+
+The training relationship is declared by model-card metadata (the standard
+``datasets`` field or ``dataset:``/``datasets:`` tags). The downloaded dataset
+metadata supplies the authoritative dataset-ID universe used to validate and
+canonicalize each source. Dataset-card fields that merely mention a model are
+not treated as training evidence because they may describe generation,
+evaluation, or provenance instead.
+
+Created: 2026-09-14
+Version: v2026.09.14-04
+
+Change history:
+2026-09-14 v2026.09.14-04
+- Validate and canonicalize dataset sources against downloaded dataset metadata.
+- Resolve case variants, Hub URLs, path suffixes, and unique bare names.
+- Add configurable paths and detailed coverage accounting.
+- Write new validated outputs by default, preserving previous files.
+- Backup: dataset_model_edges.py.bak.20260914-163220
+"""
+
 from __future__ import annotations
 
 import argparse

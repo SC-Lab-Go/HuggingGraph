@@ -2,8 +2,14 @@
 """Prepare normalized, count-verified edge inputs for HuggingGraph v3.
 
 Created: 2026-09-30
-Version: v2026.09.30-01
-Purpose: Reconcile the latest Space population and normalize all GitHub nodes.
+Version: v2026.10.02-04
+Purpose: Reconcile the latest Space population, normalize all GitHub nodes,
+         and prepare the October 2, 2026 Dataset relationship inputs.
+
+Change history:
+- 2026-10-02 v2026.10.02-04: updated Dataset relationship counts for the
+  October 2 v3 release.
+  Backup: prepare_hugginggraph_v3_edges.py.bak.20261002-200822
 """
 
 from __future__ import annotations
@@ -22,13 +28,13 @@ FIELDS = ["source", "edge_type", "target"]
 CORE_FILES = (
     ("01_model_model_edges.csv", "model", "model", 966_035),
     ("02_model_dataset_edges.csv", "dataset", "model", 362_064),
-    ("03_dataset_dataset_edges.csv", "dataset", "dataset", 5_217),
+    ("03_dataset_dataset_edges.csv", "dataset", "dataset", 12_541),
     ("04_model_library_edges.csv", "model", "library", 1_311_386),
-    ("05_dataset_library_edges.csv", "dataset", "library", 17_168),
+    ("05_dataset_library_edges.csv", "dataset", "library", 16_864),
     ("06_model_license_edges.csv", "model", "license", 1_090_845),
-    ("07_dataset_license_edges.csv", "dataset", "license", 341_884),
+    ("07_dataset_license_edges.csv", "dataset", "license", 331_317),
     ("08_model_task_edges.csv", "model", "task", 577_077),
-    ("09_dataset_task_edges.csv", "dataset", "task", 327_713),
+    ("09_dataset_task_edges.csv", "dataset", "task", 317_412),
 )
 EXPECTED_UNAVAILABLE = {
     "Gpo128482owppw/exppo-vision",
