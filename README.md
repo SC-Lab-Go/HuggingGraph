@@ -1,5 +1,11 @@
 <!--
 Change history
+2026-10-02 v2026.10.02-05
+- Documented the complete 17-subgraph v3 source pipeline published for the
+  October 2, 2026 analysis.
+- Added relationship-to-generator mapping and the validation/build workflow.
+- Backup: README.md.bak.20261002-202104
+
 2026-10-02 v2026.10.02-03
 - Rebuilt HuggingGraph v3 from the October 2, 2026 Dataset analysis.
 - Expanded Dataset-to-Dataset coverage and refreshed Dataset library, license,
@@ -61,46 +67,57 @@ relationship families, refreshes their normalized inputs, expands the
 Dataset-to-Dataset candidate graph, and adds Space nodes. The v0, v1, and v2
 files remain unchanged for reproducibility.
 
-## Source code
+## HuggingGraph v3 source pipeline
 
-The reproducible metadata-collection and graph-construction code is in the
-[`source/`](source/) directory. Install its direct Python dependencies with:
+The authoritative October 2, 2026 graph-construction code is in the
+[`source/`](source/) directory. The release uses 17 selected Python scripts
+plus [`source/requirements.txt`](source/requirements.txt). Install its direct
+Python dependencies with:
 
 ```bash
 python -m pip install -r source/requirements.txt
 ```
 
-Python 3.10 or later is recommended. The directory contains:
+Python 3.10 or later is recommended.
 
-### Metadata collection
+### Relationship generators
 
-- `download_model_metadata.py` collects Hugging Face model-card metadata.
-- `download_dataset_metadata.py` collects Hugging Face dataset-card metadata.
-- `extract_model_github_edges_streaming.py` extracts normalized GitHub links
-  from the complete model README crawl.
-- `extract_dataset_github_edges_streaming.py` extracts normalized GitHub links
-  from the complete dataset README crawl.
-- `prepare_hugginggraph_v3_edges.py` reconciles the latest Space population and
-  prepares the 17 normalized v3 edge inputs.
+| # | Relationship | Primary generator(s) |
+|---:|---|---|
+| 1 | Model to model | [`model_lineage_edges.py`](source/model_lineage_edges.py) |
+| 2 | Dataset to model | [`dataset_model_edges.py`](source/dataset_model_edges.py) |
+| 3 | Dataset to dataset candidate union | [`extract_dataset_dataset_extended.py`](source/extract_dataset_dataset_extended.py) |
+| 4 | Model to library | [`model_library_edges.py`](source/model_library_edges.py), [`build_model_readme_attribute_subgraphs.py`](source/build_model_readme_attribute_subgraphs.py) |
+| 5 | Dataset to library | [`build_latest_dataset_attributes.py`](source/build_latest_dataset_attributes.py) |
+| 6 | Model to license | [`model_license_task_github_edges.py`](source/model_license_task_github_edges.py), [`build_model_readme_attribute_subgraphs.py`](source/build_model_readme_attribute_subgraphs.py) |
+| 7 | Dataset to license | [`build_latest_dataset_attributes.py`](source/build_latest_dataset_attributes.py) |
+| 8 | Model to task | [`model_license_task_github_edges.py`](source/model_license_task_github_edges.py), [`build_model_readme_attribute_subgraphs.py`](source/build_model_readme_attribute_subgraphs.py) |
+| 9 | Dataset to task | [`build_latest_dataset_attributes.py`](source/build_latest_dataset_attributes.py) |
+| 10 | Model to GitHub repository | [`extract_model_github_edges_streaming.py`](source/extract_model_github_edges_streaming.py) |
+| 11 | Dataset to GitHub repository | [`extract_dataset_github_edges_streaming.py`](source/extract_dataset_github_edges_streaming.py) |
+| 12 | Model to Space | [`build_space_subgraphs.py`](source/build_space_subgraphs.py) |
+| 13 | Dataset to Space | [`build_space_subgraphs.py`](source/build_space_subgraphs.py) |
+| 14 | Space to GitHub repository | [`extract_space_github_edges_streaming_full.py`](source/extract_space_github_edges_streaming_full.py) |
+| 15 | Space to license | [`build_space_license_task_agent_subgraphs.py`](source/build_space_license_task_agent_subgraphs.py) |
+| 16 | Space to task | [`build_space_license_task_agent_subgraphs.py`](source/build_space_license_task_agent_subgraphs.py) |
+| 17 | Space to agent framework | [`build_space_license_task_agent_subgraphs.py`](source/build_space_license_task_agent_subgraphs.py) |
 
-### Graph construction
+### Shared preparation, validation, and assembly
 
-- `model_lineage_edges.py` constructs declared and inferred model-lineage edges.
-- `dataset_model_edges.py` constructs validated dataset-to-model training edges.
-- `dataset_dataset_edges.py` constructs dataset-lineage edges.
-- `model_library_edges.py` constructs model-to-library edges.
-- `model_license_task_github_edges.py` constructs model license, task, and GitHub edges.
-- `model_dataset_attribute_edges.py` combines model and dataset attribute subgraphs.
-- `build_hugginggraph_v2.py` assembles the HuggingGraph v2 artifacts.
-- `build_hugginggraph_v3.py` validates and assembles the HuggingGraph v3 DOT artifact.
+- [`count_model_types.py`](source/count_model_types.py) classifies model
+  derivation evidence used by the model-lineage builder.
+- [`model_dataset_attribute_edges.py`](source/model_dataset_attribute_edges.py)
+  provides shared model and Dataset attribute normalization.
+- [`audit_dataset_subgraphs.py`](source/audit_dataset_subgraphs.py) audits the
+  Dataset relationship families and reports coverage and consistency checks.
+- [`prepare_hugginggraph_v3_edges.py`](source/prepare_hugginggraph_v3_edges.py)
+  normalizes and count-checks the 17 numbered edge inputs.
+- [`build_hugginggraph_v3.py`](source/build_hugginggraph_v3.py) validates the
+  final edge and node totals and constructs `HuggingGraph_v3.dot`.
 
-### Supporting files
-
-- `count_model_types.py` provides model-derivation classification used by `model_lineage_edges.py`.
-- `requirements.txt` records the direct runtime dependencies.
-
-The large metadata snapshots and intermediate edge files are inputs or generated
-artifacts and are not stored in the `source/` directory.
+The 17 scripts named above are the curated v3 source set. Large metadata
+snapshots, final CSV/JSONL edge projections, and intermediate analysis outputs
+are intentionally not committed to `source/`.
 
 ## HuggingGraph v3 scale
 
@@ -309,7 +326,7 @@ for source, target, attributes in islice(graph.edges(data=True), 10):
     print(source_type, source_id, edge_type, target_type, target_id)
 ```
 
-NetworkX and pydot may require substantial memory for the complete v2 graph.
+NetworkX and pydot may require substantial memory for the complete v3 graph.
 For large-scale analysis, prefer streaming the DOT file or extracting a smaller
 subgraph before loading it into an in-memory graph library.
 
@@ -322,7 +339,7 @@ dot -Tsvg subgraph.dot -o subgraph.svg
 dot -Tpdf subgraph.dot -o subgraph.pdf
 ```
 
-Rendering the complete v2 graph directly to SVG, PDF, or PNG is generally
+Rendering the complete v3 graph directly to SVG, PDF, or PNG is generally
 impractical because of its size. Use a filtered subgraph for visualization.
 
 ## Paper context
