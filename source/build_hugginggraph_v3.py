@@ -2,8 +2,13 @@
 """Build the count-verified HuggingGraph v3 DOT release.
 
 Created: 2026-09-30
-Version: v2026.09.30-01
+Version: v2026.10.02-03
 Purpose: Assemble the eleven v2 relationship families and six Space families.
+
+Change history:
+- 2026-10-02 v2026.10.02-03: updated v3 validation constants for the
+  October 2 Dataset relationship analysis.
+  Backup: build_hugginggraph_v3.py.bak.20261002-195338
 """
 
 from __future__ import annotations
@@ -19,13 +24,13 @@ FIELDS = ["source", "edge_type", "target"]
 SUBGRAPHS = (
     ("model-model", "01_model_model_edges.csv", "model", "model", 966_035),
     ("model-dataset", "02_model_dataset_edges.csv", "dataset", "model", 362_064),
-    ("dataset-dataset", "03_dataset_dataset_edges.csv", "dataset", "dataset", 5_217),
+    ("dataset-dataset", "03_dataset_dataset_edges.csv", "dataset", "dataset", 12_541),
     ("model-library", "04_model_library_edges.csv", "model", "library", 1_311_386),
-    ("dataset-library", "05_dataset_library_edges.csv", "dataset", "library", 17_168),
+    ("dataset-library", "05_dataset_library_edges.csv", "dataset", "library", 16_864),
     ("model-license", "06_model_license_edges.csv", "model", "license", 1_090_845),
-    ("dataset-license", "07_dataset_license_edges.csv", "dataset", "license", 341_884),
+    ("dataset-license", "07_dataset_license_edges.csv", "dataset", "license", 331_317),
     ("model-task", "08_model_task_edges.csv", "model", "task", 577_077),
-    ("dataset-task", "09_dataset_task_edges.csv", "dataset", "task", 327_713),
+    ("dataset-task", "09_dataset_task_edges.csv", "dataset", "task", 317_412),
     ("model-github", "10_model_github_edges.csv", "model", "github", 962_855),
     ("dataset-github", "11_dataset_github_edges.csv", "dataset", "github", 188_888),
     ("model-space", "12_model_space_edges.csv", "model", "space", 941_121),
@@ -37,16 +42,16 @@ SUBGRAPHS = (
 )
 EXPECTED_NODES = {
     "model": 1_888_591,
-    "dataset": 440_013,
+    "dataset": 431_324,
     "space": 712_728,
-    "library": 2_149,
-    "license": 5_187,
-    "task": 866,
+    "library": 2_148,
+    "license": 4_888,
+    "task": 839,
     "github": 96_678,
     "agent": 11,
 }
-EXPECTED_EDGES = 7_789_720
-EXPECTED_TOTAL_NODES = 3_146_223
+EXPECTED_EDGES = 7_775_872
+EXPECTED_TOTAL_NODES = 3_137_207
 
 
 def parse_args() -> argparse.Namespace:

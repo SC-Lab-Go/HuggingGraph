@@ -1,5 +1,11 @@
 <!--
 Change history
+2026-10-02 v2026.10.02-03
+- Rebuilt HuggingGraph v3 from the October 2, 2026 Dataset analysis.
+- Expanded Dataset-to-Dataset coverage and refreshed Dataset library, license,
+  and task relationships while preserving v0, v1, and v2.
+- Backup: README.md.bak.20261002-195338
+
 2026-09-30 v2026.09.30-01
 - Released HuggingGraph v3 with six Space relationship families.
 - Normalized GitHub targets across model, dataset, and Space populations.
@@ -31,7 +37,8 @@ frameworks, and linked GitHub repositories. Version 1 captures model derivation,
 training references, and dataset derivation. Version 2 extends that graph with
 model and dataset relationships to libraries, licenses, tasks, and GitHub
 repositories. Version 3 adds Space relationships to models, datasets, GitHub
-repositories, licenses, tasks, and agent frameworks.
+repositories, licenses, tasks, and agent frameworks. The current v3 artifact
+reflects the October 2, 2026 analysis snapshot.
 
 This repository contains artifacts related to the CIKM 2025 paper:
 
@@ -44,13 +51,15 @@ This repository contains artifacts related to the CIKM 2025 paper:
 | `HuggingGraph_v0.dot` | Legacy | Original paper-era graph using raw repository IDs and the `label` edge attribute. |
 | `HuggingGraph_v1.dot` | Previous | Expanded graph with typed model/dataset IDs and both `label` and `edge_type` attributes. |
 | `HuggingGraph_v2.dot` | Previous | Version 2 graph with model and dataset attribute relationships. |
-| `HuggingGraph_v3.dot` | Current | Version 3 graph adding six Space relationship families. |
+| `HuggingGraph_v3.dot` | Current | October 2, 2026 Version 3 graph with expanded Dataset relationships and six Space relationship families. |
 | `subgraph.pdf` | Example | Small visualization suitable for inspection. |
 
 Version 0 remains available for reproducibility. Version 1 is a schema update,
 not a byte-compatible replacement for v0. Version 2 preserves every v1 edge
-and adds eight model/dataset attribute subgraphs. Version 3 preserves the prior
-relationship families, refreshes their normalized inputs, and adds Space nodes.
+and adds eight model/dataset attribute subgraphs. Version 3 preserves those
+relationship families, refreshes their normalized inputs, expands the
+Dataset-to-Dataset candidate graph, and adds Space nodes. The v0, v1, and v2
+files remain unchanged for reproducibility.
 
 ## Source code
 
@@ -95,21 +104,23 @@ artifacts and are not stored in the `source/` directory.
 
 ## HuggingGraph v3 scale
 
-HuggingGraph v3 contains 17 logical relationship families. It adds Space
-relationships and uses one normalized GitHub repository identity across model,
-dataset, and Space sources.
+HuggingGraph v3 contains 17 logical relationship families. This refreshed v3
+is based on the October 2, 2026 analysis. It includes the extended
+Dataset-to-Dataset candidate union, refreshed Dataset attributes, Space
+relationships, and one normalized GitHub repository identity across model,
+Dataset, and Space sources.
 
 | Relationship | Unique edges | Unique nodes within subgraph |
 |---|---:|---:|
 | Model to model | 966,035 | 978,868 |
 | Dataset to model | 362,064 | 287,539 |
-| Dataset to dataset | 5,217 | 5,974 |
+| Dataset to dataset candidate union | 12,541 | 15,172 |
 | Model to library | 1,311,386 | 1,214,466 |
-| Dataset to library | 17,168 | 16,727 |
+| Dataset to library | 16,864 | 16,467 |
 | Model to license | 1,090,845 | 1,092,560 |
-| Dataset to license | 341,884 | 343,153 |
+| Dataset to license | 331,317 | 332,328 |
 | Model to task | 577,077 | 541,491 |
-| Dataset to task | 327,713 | 217,675 |
+| Dataset to task | 317,412 | 211,454 |
 | Model to GitHub repository | 962,855 | 729,920 |
 | Dataset to GitHub repository | 188,888 | 196,768 |
 | Model to Space | 941,121 | 487,287 |
@@ -118,7 +129,7 @@ dataset, and Space sources.
 | Space to license | 420,369 | 420,557 |
 | Space to task | 43,223 | 42,229 |
 | Space to agent framework | 37,059 | 37,016 |
-| **Unified HuggingGraph v3** | **7,789,720** | **See the node-type breakdown below** |
+| **Unified HuggingGraph v3** | **7,775,872** | **See the node-type breakdown below** |
 
 The node total is the global union of all endpoints. Relationship-specific
 node counts must not be added because the same node can occur in several
@@ -127,14 +138,22 @@ subgraphs.
 | Node type | Unique nodes in v3 |
 |---|---:|
 | Model | 1,888,591 |
-| Dataset | 440,013 |
+| Dataset | 431,324 |
 | Space | 712,728 |
-| Library | 2,149 |
-| License | 5,187 |
-| Task | 866 |
+| Library | 2,148 |
+| License | 4,888 |
+| Task | 839 |
 | GitHub repository | 96,678 |
 | Agent framework | 11 |
-| **Total** | **3,146,223** |
+| **Total** | **3,137,207** |
+
+The Dataset-to-Dataset value is an extended candidate union rather than the
+5,217-edge conservative metadata-only baseline. Its 12,541 unique Dataset
+pairs combine the official metadata baseline with high-confidence README
+lineage evidence and externally revalidated Dataset references. Because the
+aggregate DOT stores one edge per unique pair, these edges use
+`dataset_relationship_candidate`; evidence-specific relationship types remain
+available in the analysis outputs used to construct the release.
 
 The verified Space population contains 1,481,220 repositories: 413,102 have
 at least one model or dataset relationship and 1,068,118 do not. Three Space
@@ -188,6 +207,7 @@ artifact or category node.
 | `merged` | model | model | Target is a merge containing source. |
 | `trained_on` | dataset | model | Source dataset is declared as training data for target model. |
 | `derived_from` | dataset | dataset | Target dataset is derived from source dataset. |
+| `dataset_relationship_candidate` | dataset | dataset | Candidate Dataset relationship from the October 2 expanded union. |
 | `uses_library` | model or dataset | library | Source declares or is associated with the target library. |
 | `has_license` | model, dataset, or Space | license | Source declares or is associated with the target license. |
 | `performs_task` | model | task | Model performs or is associated with the target task. |
@@ -226,6 +246,20 @@ evidence strength:
 The aggregate DOT file does not encode per-edge confidence or provenance.
 Treat inferred and unresolved relationships as candidates for additional
 validation rather than equivalent to validated declarations.
+
+### October 2, 2026 Dataset evidence
+
+The refreshed v3 Dataset-to-Dataset layer contains 12,541 unique candidate
+pairs across 15,172 participating Dataset nodes. The conservative
+metadata-only baseline remains 5,217 edges and 5,974 nodes. The expanded graph
+is labeled as a candidate union because README-derived lineage evidence still
+requires publication-level manual precision assessment.
+
+Dataset library, license, and task edges were regenerated from the September
+28 full Dataset README snapshot during the October 2 analysis. That snapshot
+contains 1,023,134 Dataset records, including 698,202 readable READMEs and
+670,610 cards with valid, nonempty YAML front matter. The refreshed Dataset
+counts are 16,864 library edges, 331,317 license edges, and 317,412 task edges.
 
 Repository metadata is incomplete and user-authored. Absence of an edge does
 not prove that no relationship exists. An unresolved ID may be private,
