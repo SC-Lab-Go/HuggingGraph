@@ -130,7 +130,7 @@ Dataset, and Space sources.
 | Relationship | Unique edges | Unique nodes within subgraph |
 |---|---:|---:|
 | Model to model | 966,035 | 978,868 |
-| Dataset to model | 362,064 | 287,539 |
+| Dataset to model | 253,111 | 194,462 |
 | Dataset to dataset | 12,541 | 15,172 |
 | Model to library | 1,311,386 | 1,214,466 |
 | Dataset to library | 16,864 | 16,467 |
@@ -146,7 +146,7 @@ Dataset, and Space sources.
 | Space to license | 420,369 | 420,557 |
 | Space to task | 43,223 | 42,229 |
 | Space to agent framework | 37,059 | 37,016 |
-| **Unified HuggingGraph v3** | **7,775,872** | **See the node-type breakdown below** |
+| **Unified HuggingGraph v3** | **7,666,919** | **See the node-type breakdown below** |
 
 The node total is the global union of all endpoints. Relationship-specific
 node counts must not be added because the same node can occur in several
@@ -154,15 +154,15 @@ subgraphs.
 
 | Node type | Unique nodes in v3 |
 |---|---:|
-| Model | 1,888,591 |
-| Dataset | 431,324 |
+| Model | 1,885,384 |
+| Dataset | 414,723 |
 | Space | 712,728 |
 | Library | 2,148 |
 | License | 4,888 |
 | Task | 839 |
 | GitHub repository | 96,678 |
 | Agent framework | 11 |
-| **Total** | **3,137,207** |
+| **Total** | **3,117,399** |
 
 The Dataset-to-Dataset value is an extended candidate union rather than the
 5,217-edge conservative metadata-only baseline. Its 12,541 unique Dataset
