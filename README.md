@@ -179,15 +179,6 @@ reconciliation and are excluded from that verified population. Among connected
 Space nodes, 59,747 link to 31,148 normalized GitHub repositories through
 113,755 unique Space-to-GitHub edges.
 
-## Crawled populations
-
-| Population outcome | Models | Datasets |
-|---|---:|---:|
-| Readable README/card | 1,975,515 | 698,202 |
-| No readable README | 1,005,324 | 286,579 |
-| Restricted repository | 48,538 | 38,353 |
-| **Total processed** | **3,029,377** | **1,023,134** |
-
 ## Node identifiers
 
 Versions 1 through 3 prefix Hugging Face and categorical node IDs with their
