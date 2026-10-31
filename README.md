@@ -164,21 +164,6 @@ subgraphs.
 | Agent framework | 11 |
 | **Total** | **3,117,399** |
 
-The Dataset-to-Dataset value is an extended candidate union rather than the
-5,217-edge conservative metadata-only baseline. Its 12,541 unique Dataset
-pairs combine the official metadata baseline with high-confidence README
-lineage evidence and externally revalidated Dataset references. Because the
-aggregate DOT stores one edge per unique pair, these edges use
-`dataset_relationship_candidate`; evidence-specific relationship types remain
-available in the analysis outputs used to construct the release.
-
-The verified Space population contains 1,481,220 repositories: 413,102 have
-at least one model or dataset relationship and 1,068,118 do not. Three Space
-IDs present in the card snapshot were unavailable during relationship
-reconciliation and are excluded from that verified population. Among connected
-Space nodes, 59,747 link to 31,148 normalized GitHub repositories through
-113,755 unique Space-to-GitHub edges.
-
 ## Node identifiers
 
 Versions 1 through 3 prefix Hugging Face and categorical node IDs with their
